@@ -89,15 +89,17 @@ These documents define *how* to engineer the system, not *what* the system does.
 
 # Technology Stack
 
-- Next.js (App Router)
+- Next.js 16 (App Router)
 - TypeScript
-- Tailwind CSS
+- Tailwind CSS v4
 - shadcn/ui
 - Supabase
 - Supabase Auth
+- Supabase CLI (migrations)
 - Resend
 - Vercel
 - jsPDF
+- npm (package manager)
 
 ---
 

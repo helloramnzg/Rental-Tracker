@@ -15,9 +15,25 @@ version: 1.0.0
 
 ## Electricity
 
-Unit 1: (Current Reading − Previous Reading) × ₱15/kWh
+Electricity Rate is configurable by the landlord.
+
+-   Default Electricity Rate: ₱15.00/kWh
+-   The Billing screen pre-fills the default rate.
+-   The landlord may override the rate for the current billing cycle.
+-   Generated SOAs permanently store the electricity rate used.
+
+Unit 1: (Current Reading − Previous Reading) × Electricity Rate
 
 Unit 2: Mother Meter Bill − Unit 1 Electricity Cost
+
+## Water Charge
+
+Water Charge is a fixed business rule.
+
+-   Each tenant pays ₱200.00.
+-   Automatically included in every billing cycle.
+-   Not configurable and not editable.
+-   Stored in generated SOAs.
 
 ## Charges
 

@@ -1,26 +1,217 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Token source of truth: docs/design/20-design-tokens.md
+  Semantic shadcn variables below are mapped onto the documented
+  brand tokens. Do not hardcode colours, spacing, or radii in
+  components — reference these tokens instead.
+*/
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Semantic status colours (docs/design/20-design-tokens.md) */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-purple: var(--purple);
+
+  --radius-sm: calc(var(--radius) * 0.67);
+  --radius-md: calc(var(--radius) * 0.83);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.33);
+  --radius-full: 9999px;
+
+  /* Layout tokens */
+  --spacing-sidebar-width: var(--sidebar-width);
+  --spacing-topbar-height: var(--topbar-height);
+  --spacing-page-padding: var(--page-padding);
+  --spacing-card-padding: var(--card-padding);
+  --spacing-max-content-width: var(--max-content-width);
+}
+
+/* Static tokens (not theme-switchable) — registered under Tailwind's
+   namespaces so they compile into real utility classes, e.g.
+   `duration-fast`, `z-sticky`, `shadow-md`. */
+@theme {
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 250ms;
+  --ease-standard: ease-in-out;
+
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-modal: 500;
+  --z-index-toast: 900;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 4px 8px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 10px 24px rgba(16, 24, 40, 0.1);
+
+  /* Typography scale — docs/design/20-design-tokens.md.
+     Tailwind's default spacing scale (4px steps) already lines up
+     with the documented 8px grid, so spacing uses plain utilities
+     (gap-6, p-6, etc.) instead of custom tokens. */
+  --text-display: 32px;
+  --text-display--line-height: 40px;
+  --text-display--font-weight: 700;
+  --text-h1: 28px;
+  --text-h1--line-height: 36px;
+  --text-h1--font-weight: 700;
+  --text-h2: 22px;
+  --text-h2--line-height: 30px;
+  --text-h2--font-weight: 600;
+  --text-h3: 18px;
+  --text-h3--line-height: 26px;
+  --text-h3--font-weight: 600;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-small: 14px;
+  --text-small--line-height: 20px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+}
+
+:root {
+  /* Brand */
+  --primary: #1e3d34; /* Primary Dark — buttons, headings */
+  --primary-foreground: #ffffff;
+  --accent: #e8f5e5; /* Soft Green — active states */
+  --accent-foreground: #1e3d34;
+
+  /* Neutral */
+  --background: #f7f9f7;
+  --foreground: #1f2937; /* Text Primary */
+  --card: #ffffff; /* Surface */
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --secondary: #ffffff;
+  --secondary-foreground: #1e3d34;
+  --muted: #f7f9f7;
+  --muted-foreground: #6b7280; /* Text Secondary */
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #a8e063; /* Primary accent — focus rings */
+
+  /* Semantic */
+  --success: #8fd694;
+  --warning: #f9d976;
+  --destructive: #f87171; /* Error */
+  --info: #93c5fd;
+  --purple: #ebd6ff;
+
+  /* Charts — never more than one accent colour per chart */
+  --chart-1: #a8e063; /* Green */
+  --chart-2: #f9d976; /* Yellow */
+  --chart-3: #ebd6ff; /* Purple */
+  --chart-4: #9ca3af; /* Neutral Grey */
+  --chart-5: #6b7280;
+
+  --radius: 12px; /* Card radius; Button/Input ≈ 10px via radius-md */
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #1e3d34;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8f5e5; /* Active nav item */
+  --sidebar-accent-foreground: #1e3d34;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #a8e063;
+
+  /* Typography */
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --topbar-height: 72px;
+  --page-padding: 24px;
+  --card-padding: 24px;
+  --max-content-width: 1440px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  --background: #14181a;
+  --foreground: #f7f9f7;
+  --card: #1c2224;
+  --card-foreground: #f7f9f7;
+  --popover: #1c2224;
+  --popover-foreground: #f7f9f7;
+  --primary: #a8e063;
+  --primary-foreground: #1e3d34;
+  --secondary: #1c2224;
+  --secondary-foreground: #f7f9f7;
+  --muted: #232a2c;
+  --muted-foreground: #9ca3af;
+  --accent: #23372f;
+  --accent-foreground: #e8f5e5;
+  --destructive: #f87171;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #a8e063;
+  --chart-1: #a8e063;
+  --chart-2: #f9d976;
+  --chart-3: #ebd6ff;
+  --chart-4: #9ca3af;
+  --chart-5: #6b7280;
+  --sidebar: #1c2224;
+  --sidebar-foreground: #f7f9f7;
+  --sidebar-primary: #a8e063;
+  --sidebar-primary-foreground: #1e3d34;
+  --sidebar-accent: #23372f;
+  --sidebar-accent-foreground: #e8f5e5;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #a8e063;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

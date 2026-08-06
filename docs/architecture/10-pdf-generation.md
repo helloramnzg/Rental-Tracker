@@ -39,7 +39,7 @@ historically accurate and reproducible.
 
 Library:
 
-**@react-pdf/renderer**
+**pdf-lib**
 
 Reasons:
 

@@ -1,33 +1,17 @@
-# Project Glossary
-
-## Billing Cycle
-Monthly period ending on the 28th.
-
-## SOA
-Statement of Account issued to tenants.
-
-## SOA Snapshot
-Immutable record of a generated monthly SOA.
-
-## Mother Meter
-Main electricity meter used for calculating Unit 2 usage.
-
-## Submeter
-Individual electricity meter assigned to a tenant.
-
-## Unit 1
-First-floor tenant.
-
-## Unit 2
-Second-floor tenant.
+# 35 – Project Glossary
 
 ## Electricity Rate
-Cost per kWh configured in Settings.
 
-## Billing Month
-The month represented by an SOA.
+The configurable cost per kilowatt-hour (kWh) used to calculate electricity charges for Unit 1.
 
-## Reminder Schedule
-25th: Read submeter
-26th: Complete billing
-27th: Generate SOAs
+Default Value:
+
+₱15.00 / kWh
+
+The value is maintained by the landlord and is recorded in each generated SOA.
+
+## Water Charge
+
+A fixed monthly fee of ₱200.00 charged to each tenant.
+
+Automatically included in every billing cycle. Not configurable and not editable.

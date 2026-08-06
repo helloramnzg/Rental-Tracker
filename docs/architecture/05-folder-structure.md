@@ -43,7 +43,7 @@ rental-tracker/
 ├── services/
 ├── emails/
 ├── pdf/
-├── prisma/
+├── supabase/
 ├── public/
 ├── types/
 ├── utils/
@@ -135,7 +135,6 @@ Shared infrastructure.
 Examples:
 
 -   Supabase client
--   Prisma client
 -   Configuration
 -   Logger
 
@@ -163,14 +162,14 @@ Examples:
 
 ------------------------------------------------------------------------
 
-## prisma/
+## supabase/
 
-Database schema and migrations.
+Database schema and migrations, managed with the Supabase CLI.
 
 Contains:
 
--   schema.prisma
 -   migrations/
+-   config.toml
 
 ------------------------------------------------------------------------
 

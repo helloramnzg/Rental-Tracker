@@ -55,14 +55,10 @@ Property
 
 ## users
 
-Single landlord account.
-
-  Field        Type        Notes
-  ------------ ----------- --------
-  id           uuid        PK
-  name         text        
-  email        text        unique
-  created_at   timestamp   
+Not implemented as a `public.users` table. The single landlord account
+is covered entirely by Supabase Auth's own `auth.users`, and no other
+table references `users.id`, so a separate profile table was never
+load-bearing. See docs/architecture/12-architecture-decisions.md.
 
 ------------------------------------------------------------------------
 
@@ -125,9 +121,13 @@ Represents one calendar month.
   month                  integer
   year                   integer
   mother_meter_bill      numeric
-  water_charge_default   numeric
   status                 enum(draft,billing_complete,soa_generated,sent,closed)
   created_at             timestamp
+
+Water Charge is a fixed business rule (₱200.00 per tenant) and is not
+stored per billing cycle. The Electricity Rate used for the cycle is
+already captured in `meter_readings.rate_per_kwh`, since it is
+configurable and may be overridden by the landlord.
 
 Unique constraint:
 
@@ -170,7 +170,10 @@ Stores all billable items.
 
 ------------------------------------------------------------------------
 
-## statements_of_account
+## generated_soas
+
+Named `statements_of_account` in earlier drafts of this document;
+renamed during implementation.
 
   Field              Type
   ------------------ --------------------
@@ -182,7 +185,25 @@ Stores all billable items.
   emailed_at         timestamp nullable
 
 The emailed_at field records when the landlord confirms the SOA was
-sent.
+sent. Not yet set by any implemented workflow — no "mark as sent"
+action exists yet.
+
+------------------------------------------------------------------------
+
+## settings
+
+Not in the original schema design. Added during implementation to
+hold the configurable Electricity Rate default described in
+docs/design/26-settings-screen.md, which this document never gave a
+home to.
+
+  Field                      Type
+  -------------------------- ---------
+  id                         uuid
+  property_id                uuid FK, unique
+  default_electricity_rate   numeric
+  created_at                 timestamp
+  updated_at                 timestamp
 
 ------------------------------------------------------------------------
 
@@ -209,7 +230,7 @@ Multiple payments are allowed for partial settlements.
 -   One Unit → One Active Tenant
 -   One Billing Cycle → Many Charges
 -   One Billing Cycle → One Meter Reading
--   One Billing Cycle → Two SOAs
+-   One Billing Cycle → Two Generated SOAs
 -   One Billing Cycle → Many Payments
 
 ------------------------------------------------------------------------
@@ -222,7 +243,7 @@ Create indexes on:
 -   billing_cycles(year, month)
 -   charges.tenant_id
 -   payments.tenant_id
--   statements_of_account.billing_cycle_id
+-   generated_soas.billing_cycle_id
 
 ------------------------------------------------------------------------
 

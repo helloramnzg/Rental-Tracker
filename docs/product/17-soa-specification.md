@@ -1,36 +1,23 @@
----
-last_updated: 2026-08-06
-project: Rental Tracker
-status: Draft
-title: 13-soa-specification
-version: 1.0.0
----
+# 17 – SOA Specification
 
-# SOA Specification
+## Electricity Charge
 
-## Header
+The Statement of Account (SOA) must display:
 
--   Property
--   Tenant
--   Unit
--   Billing Month
+- Previous Reading
+- Current Reading
+- Electricity Usage (kWh)
+- Configured Electricity Rate
+- Electricity Charge
 
-## Charges
+### Formula
 
--   Rent
--   Electricity
--   Water
--   Other Charges
--   Previous Balance
+Electricity Charge = Usage × Configured Electricity Rate
 
-## Summary
+The electricity rate shown on the SOA must reflect the rate configured in Settings at the time the SOA is generated.
 
--   Current Charges
--   Total Due
+## Water Charge
 
-## Footer
+The Statement of Account (SOA) must display a fixed Water Charge of ₱200.00 per tenant.
 
--   Payment instructions
--   Contact details
-
-Generated as A4 PDF from immutable billing snapshots.
+The Water Charge is automatically included in every billing cycle, is not configurable or editable, and is stored in the generated SOA.

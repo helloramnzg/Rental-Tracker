@@ -49,7 +49,9 @@ Reasons:
 
 Scheduler: **Vercel Cron**
 
-Three scheduled jobs run every month.
+Three scheduled jobs run every month. The reminder schedule (25th,
+26th, 27th) is a fixed business rule and is not configurable through
+Settings.
 
   Day    Time    Purpose
   ------ ------- --------------------------------------
