@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { PropertySummary } from "@/services/shell/get-property-summary";
+import type { NotificationItem } from "@/services/notifications/get-notifications";
 import { Sidebar } from "./sidebar";
 import { Topbar } from "./topbar";
 import { SidebarStateProvider } from "./sidebar-context";
@@ -15,16 +16,20 @@ import { SidebarStateProvider } from "./sidebar-context";
 export function AppShell({
   children,
   property,
+  landlordName,
+  notifications,
 }: {
   children: ReactNode;
   property: PropertySummary;
+  landlordName: string;
+  notifications: NotificationItem[];
 }) {
   return (
     <SidebarStateProvider>
       <div className="flex h-screen overflow-hidden">
-        <Sidebar property={property} />
+        <Sidebar property={property} landlordName={landlordName} />
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <Topbar property={property} />
+          <Topbar property={property} landlordName={landlordName} notifications={notifications} />
           <main className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-[1440px] px-6 py-6">
               {children}

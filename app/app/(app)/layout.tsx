@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getPropertySummary } from "@/services/shell/get-property-summary";
+import { getCurrentUserContext } from "@/services/settings/get-current-user-context";
+import { getNotifications } from "@/services/notifications/get-notifications";
 import { AppShell } from "@/components/layout/app-shell";
 
 // Every authenticated page reads live billing/tenant/payment data via
@@ -13,7 +15,20 @@ export const fetchCache = "force-no-store";
 
 export default async function AppGroupLayout({ children }: { children: ReactNode }) {
   const supabase = await createClient();
-  const property = await getPropertySummary(supabase);
+  const now = new Date();
+  const [property, user, notifications] = await Promise.all([
+    getPropertySummary(supabase),
+    getCurrentUserContext(supabase),
+    getNotifications(supabase, { year: now.getFullYear(), month: now.getMonth() + 1 }),
+  ]);
 
-  return <AppShell property={property}>{children}</AppShell>;
+  return (
+    <AppShell
+      property={property}
+      landlordName={user?.fullName ?? ""}
+      notifications={notifications.items}
+    >
+      {children}
+    </AppShell>
+  );
 }

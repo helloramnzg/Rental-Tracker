@@ -27,14 +27,18 @@ export type SoaData = {
     totalDue: number;
   };
   amountPaid: number;
+  balanceDue: number;
   paymentStatus: PaymentStatus;
 };
 
-// Loads everything needed to render an SOA, entirely from the stored
-// billing snapshot (docs/architecture/10-pdf-generation.md: "PDFs are
-// generated from billing snapshots, never from live tenant data").
-// The only live reads are tenant.full_name/due_day and unit/property
-// names, which are labels, not billing amounts.
+// Loads everything needed to render an SOA. Charge amounts (rent,
+// electricity, water, other, previousBalance, totalDue) come from the
+// stored billing snapshot and never change after generation
+// (docs/architecture/10-pdf-generation.md). amountPaid, balanceDue and
+// paymentStatus are recomputed live from the payments table on every
+// call, same as tenant.full_name/due_day and unit/property names, so
+// that regenerating an SOA always reflects the latest recorded
+// payments — not just the latest charge snapshot.
 export async function getSoaData(
   supabase: SupabaseClient<Database>,
   { billingCycleId, tenantId }: { billingCycleId: string; tenantId: string },
@@ -104,6 +108,7 @@ export async function getSoaData(
       totalDue: charges.total_due,
     },
     amountPaid,
+    balanceDue: charges.total_due - amountPaid,
     paymentStatus: computePaymentStatus(charges.total_due, amountPaid),
   };
 }

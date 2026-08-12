@@ -141,6 +141,86 @@ describe("SOA generation (integration)", () => {
     }
   });
 
+  it("nets an advance/partial payment against the balance due, without altering the stored charge snapshot", async () => {
+    const before = await getSoaData(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+    });
+    expect(before.balanceDue).toBe(before.charges.totalDue);
+
+    // e.g. charge = totalDue, advance payment = 2000 of it.
+    const payment = await createPaymentFixture(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+      amount: 2000,
+    });
+    try {
+      const afterPartial = await getSoaData(supabase, {
+        billingCycleId: cycle.billingCycleId,
+        tenantId: tenant.tenantId,
+      });
+      expect(afterPartial.amountPaid).toBe(2000);
+      expect(afterPartial.balanceDue).toBe(before.charges.totalDue - 2000);
+      expect(afterPartial.paymentStatus).toBe("partial");
+      // The underlying charge snapshot must stay untouched.
+      expect(afterPartial.charges.totalDue).toBe(before.charges.totalDue);
+    } finally {
+      await payment.cleanup();
+    }
+  });
+
+  it("fully paying the balance brings balanceDue to zero", async () => {
+    const before = await getSoaData(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+    });
+
+    const payment = await createPaymentFixture(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+      amount: before.charges.totalDue,
+    });
+    try {
+      const after = await getSoaData(supabase, {
+        billingCycleId: cycle.billingCycleId,
+        tenantId: tenant.tenantId,
+      });
+      expect(after.balanceDue).toBe(0);
+      expect(after.paymentStatus).toBe("paid");
+    } finally {
+      await payment.cleanup();
+    }
+  });
+
+  it("multiple payments toward the same cycle are all applied to the balance due", async () => {
+    const before = await getSoaData(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+    });
+
+    const firstPayment = await createPaymentFixture(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+      amount: 1000,
+    });
+    const secondPayment = await createPaymentFixture(supabase, {
+      billingCycleId: cycle.billingCycleId,
+      tenantId: tenant.tenantId,
+      amount: 1500,
+    });
+    try {
+      const after = await getSoaData(supabase, {
+        billingCycleId: cycle.billingCycleId,
+        tenantId: tenant.tenantId,
+      });
+      expect(after.amountPaid).toBe(2500);
+      expect(after.balanceDue).toBe(before.charges.totalDue - 2500);
+    } finally {
+      await firstPayment.cleanup();
+      await secondPayment.cleanup();
+    }
+  });
+
   it("getSoaScreenContext lists a card per billed tenant with generation metadata once generated", async () => {
     const before = await getSoaScreenContext(supabase, { year: cycle.year, month: cycle.month });
     expect(before.billingCycle?.id).toBe(cycle.billingCycleId);

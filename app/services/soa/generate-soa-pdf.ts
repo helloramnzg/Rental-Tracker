@@ -51,6 +51,25 @@ function formatDate(date: Date): string {
   }).format(date);
 }
 
+// Charge line items for the SOA table. Electricity intentionally has
+// no `detail` — the SOA displays the resulting charge only, not the
+// kWh usage quantity (docs/product/17-soa-specification.md). The
+// usage/rate breakdown remains available in data.meterReading for
+// callers that need it (e.g. the Billing screen), just not printed
+// here. Exported as a pure function so this stays testable without
+// parsing rendered PDF bytes.
+export function buildSoaChargeRows(
+  data: SoaData,
+): { label: string; amount: number; detail?: string }[] {
+  return [
+    { label: "Rent", amount: data.charges.rent },
+    { label: "Electricity", amount: data.charges.electricity },
+    { label: "Water", amount: data.charges.water },
+    { label: "Other Charges", amount: data.charges.otherCharges },
+    { label: "Previous Balance", amount: data.charges.previousBalance },
+  ];
+}
+
 export async function generateSoaPdf(data: SoaData): Promise<Uint8Array> {
   const fontsDir = path.join(process.cwd(), "services/soa/fonts");
   const [regularBytes, boldBytes] = await Promise.all([
@@ -140,17 +159,7 @@ export async function generateSoaPdf(data: SoaData): Promise<Uint8Array> {
   y = drawDivider(page, y, MARGIN, contentWidth);
   y -= 20;
 
-  const rows: { label: string; amount: number; detail?: string }[] = [
-    { label: "Rent", amount: data.charges.rent },
-    {
-      label: "Electricity",
-      amount: data.charges.electricity,
-      detail: `${data.meterReading.usageKwh.toFixed(2)} kWh (${data.meterReading.previousReading.toFixed(2)} → ${data.meterReading.currentReading.toFixed(2)}) × ${formatCurrency(data.meterReading.ratePerKwh)}/kWh`,
-    },
-    { label: "Water", amount: data.charges.water },
-    { label: "Other Charges", amount: data.charges.otherCharges },
-    { label: "Previous Balance", amount: data.charges.previousBalance },
-  ];
+  const rows = buildSoaChargeRows(data);
 
   for (const row of rows) {
     page.drawText(row.label, { x: MARGIN, y, size: 10.5, font, color: COLOR_TEXT });
@@ -178,7 +187,7 @@ export async function generateSoaPdf(data: SoaData): Promise<Uint8Array> {
   });
   drawRightAligned(
     page,
-    formatCurrency(data.charges.totalDue),
+    formatCurrency(data.balanceDue),
     MARGIN + contentWidth,
     y,
     fontBold,

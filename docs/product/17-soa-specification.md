@@ -2,19 +2,17 @@
 
 ## Electricity Charge
 
-The Statement of Account (SOA) must display:
-
-- Previous Reading
-- Current Reading
-- Electricity Usage (kWh)
-- Configured Electricity Rate
-- Electricity Charge
+The Statement of Account (SOA) must display the resulting Electricity Charge amount. It must NOT display the electricity usage quantity (kWh) — the SOA is a billing statement, not a meter-reading report.
 
 ### Formula
 
 Electricity Charge = Usage × Configured Electricity Rate
 
-The electricity rate shown on the SOA must reflect the rate configured in Settings at the time the SOA is generated.
+This formula still governs the calculation; only the usage quantity is omitted from the printed statement. The electricity rate used must reflect the rate configured in Settings at the time the SOA is generated.
+
+## Amount Due
+
+The "Total Amount Due" shown on the SOA is the balance remaining after payments already recorded for that billing cycle are applied (Total Charges − Amount Paid), not the original gross charge. It is recalculated from the current payment records every time the SOA is generated or regenerated.
 
 ## Water Charge
 

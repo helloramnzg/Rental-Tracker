@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { PanelLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getInitial } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,13 @@ import { navItems, settingsNavItem } from "./nav-items";
 // the logo/toggle crossfade) shares SIDEBAR_MOTION so the whole
 // thing moves as one system rather than a pile of separately-timed
 // animations.
-export function Sidebar({ property }: { property: PropertySummary }) {
+export function Sidebar({
+  property,
+  landlordName,
+}: {
+  property: PropertySummary;
+  landlordName: string;
+}) {
   const pathname = usePathname();
   const { collapsed, toggle } = useSidebarState();
 
@@ -158,11 +164,11 @@ export function Sidebar({ property }: { property: PropertySummary }) {
       <div className="flex items-center gap-3 px-4 py-4">
         <Avatar className="size-8">
           <AvatarFallback className="bg-accent text-accent-foreground">
-            L
+            {getInitial(landlordName)}
           </AvatarFallback>
         </Avatar>
         <CollapsibleLabel expanded={!collapsed} className="whitespace-nowrap text-caption font-semibold">
-          Landlord
+          {landlordName || "Landlord"}
         </CollapsibleLabel>
       </div>
     </aside>

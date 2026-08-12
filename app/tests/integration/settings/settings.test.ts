@@ -11,6 +11,7 @@ import { getSettingsContext } from "@/services/settings/get-settings-context";
 import { updateBillingSettings } from "@/services/settings/update-billing-settings";
 import { updateProperty } from "@/services/settings/update-property";
 import { updateNotificationPreferences } from "@/services/settings/update-notification-preferences";
+import { getCurrentUserContext } from "@/services/settings/get-current-user-context";
 
 // Settings is a real one-row-per-property singleton — every test
 // snapshots it first and restores it in afterEach. See
@@ -86,6 +87,36 @@ describe("settings (integration)", () => {
     context = await getSettingsContext(supabase);
     expect(context.notifications.emailEnabled).toBe(true);
     expect(context.notifications.inAppEnabled).toBe(false);
+  });
+
+  // Landlord Name (Profile form) lives in auth.users.user_metadata, not
+  // the settings/properties tables the rest of this file exercises —
+  // see app/features/settings/components/profile-form.tsx. This
+  // regression-tests that the write (auth.updateUser) is actually
+  // readable back through the same server-side path the app uses to
+  // display it (get-current-user-context.ts), across what is
+  // effectively a fresh request — the exact "edit -> refresh" scenario
+  // from the bug report.
+  it("a landlord name saved via auth.updateUser is readable back via getCurrentUserContext", async () => {
+    const before = await getCurrentUserContext(supabase);
+    expect(before).not.toBeNull();
+    const originalFullName = before!.fullName;
+    const originalPhone = before!.phone;
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: "Regression Test Landlord", phone: originalPhone || null },
+      });
+      expect(error).toBeNull();
+
+      const after = await getCurrentUserContext(supabase);
+      expect(after?.fullName).toBe("Regression Test Landlord");
+    } finally {
+      const { error: restoreError } = await supabase.auth.updateUser({
+        data: { full_name: originalFullName, phone: originalPhone || null },
+      });
+      expect(restoreError).toBeNull();
+    }
   });
 
   it("getSettingsContext falls back to documented defaults when settings has never been written", async () => {
