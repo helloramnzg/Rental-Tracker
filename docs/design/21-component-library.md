@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 19-design-system.md
 - 20-design-tokens.md
@@ -14,8 +14,8 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines every reusable UI component used throughout Rental
-Tracker. All screens should be assembled from these components to ensure
+This document defines every reusable UI component used throughout Upa OS.
+All screens should be assembled from these components to ensure
 consistency between design and implementation.
 
 ------------------------------------------------------------------------
@@ -327,6 +327,6 @@ A component is complete when it:
 
 # Summary
 
-The component library is the foundation of the Rental Tracker interface.
+The component library is the foundation of the Upa OS interface.
 Every screen should be composed from these reusable building blocks to
 maintain a cohesive, scalable, and maintainable design system.

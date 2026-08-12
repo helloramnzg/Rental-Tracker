@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/cron/reminder-submeter",
+      "schedule": "0 1 25 * *"
+    },
+    {
+      "path": "/api/cron/reminder-billing",
+      "schedule": "0 1 26 * *"
+    },
+    {
+      "path": "/api/cron/soa-ready",
+      "schedule": "0 1 27 * *"
+    }
+  ]
+}

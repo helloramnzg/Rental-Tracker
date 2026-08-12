@@ -30,6 +30,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --color-chart-neutral: var(--chart-neutral);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -49,9 +50,13 @@
 
   /* Semantic status colours (docs/design/20-design-tokens.md) */
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-purple: var(--purple);
+  --color-neutral: var(--neutral);
+  --color-neutral-foreground: var(--neutral-foreground);
 
   --radius-sm: calc(var(--radius) * 0.67);
   --radius-md: calc(var(--radius) * 0.83);
@@ -86,28 +91,34 @@
   --shadow-lg: 0 10px 24px rgba(16, 24, 40, 0.1);
 
   /* Typography scale — docs/design/20-design-tokens.md.
-     Tailwind's default spacing scale (4px steps) already lines up
-     with the documented 8px grid, so spacing uses plain utilities
-     (gap-6, p-6, etc.) instead of custom tokens. */
+     Calibrated against the Upa OS prototype (DM Sans, tight
+     negative tracking on headings, two effective weights — 400
+     regular / 600-700 emphasis). Tailwind's default spacing scale
+     (4px steps) already lines up with the documented 8px grid, so
+     spacing uses plain utilities (gap-6, p-6, etc.) instead of
+     custom tokens. */
   --text-display: 32px;
   --text-display--line-height: 40px;
   --text-display--font-weight: 700;
+  --text-display--letter-spacing: -0.03em;
   --text-h1: 28px;
   --text-h1--line-height: 36px;
   --text-h1--font-weight: 700;
-  --text-h2: 22px;
-  --text-h2--line-height: 30px;
-  --text-h2--font-weight: 600;
-  --text-h3: 18px;
-  --text-h3--line-height: 26px;
-  --text-h3--font-weight: 600;
-  --text-body: 16px;
-  --text-body--line-height: 24px;
-  --text-small: 14px;
-  --text-small--line-height: 20px;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: 18px;
+  --text-h2--line-height: 26px;
+  --text-h2--font-weight: 700;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: 17px;
+  --text-h3--line-height: 24px;
+  --text-h3--font-weight: 700;
+  --text-h3--letter-spacing: -0.01em;
+  --text-body: 14px;
+  --text-body--line-height: 20px;
+  --text-small: 13px;
+  --text-small--line-height: 18px;
   --text-caption: 12px;
   --text-caption--line-height: 16px;
-  --text-caption--font-weight: 500;
 }
 
 :root {
@@ -134,17 +145,25 @@
 
   /* Semantic */
   --success: #8fd694;
+  --success-foreground: #2f6e43; /* readable green text on --success tints */
   --warning: #f9d976;
+  --warning-foreground: #8a6d1f; /* readable amber text on --warning tints */
   --destructive: #f87171; /* Error */
   --info: #93c5fd;
   --purple: #ebd6ff;
 
-  /* Charts — never more than one accent colour per chart */
-  --chart-1: #a8e063; /* Green */
+  /* Neutral pill — draft / pending / archived states */
+  --neutral: #eef1ee;
+  --neutral-foreground: #586158;
+
+  /* Charts — never more than one accent colour per chart; everything
+     else is a neutral grey, never red or yellow. */
+  --chart-1: #a8e063; /* Green — the one accent */
   --chart-2: #f9d976; /* Yellow */
   --chart-3: #ebd6ff; /* Purple */
   --chart-4: #9ca3af; /* Neutral Grey */
   --chart-5: #6b7280;
+  --chart-neutral: #d9e5d7; /* Soft grey-green — secondary chart series */
 
   --radius: 12px; /* Card radius; Button/Input ≈ 10px via radius-md */
 
@@ -159,7 +178,7 @@
   --sidebar-ring: #a8e063;
 
   /* Typography */
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
 
   /* Layout */

@@ -1,5 +1,5 @@
 ---
-project: Rental Tracker
+project: Upa OS
 title: ai-rules
 version: 1.0.0
 ---
@@ -8,7 +8,7 @@ version: 1.0.0
 
 ## Mission
 
-Build Rental Tracker by following the documentation before writing code.
+Build Upa OS by following the documentation before writing code.
 
 ## Mandatory Rules
 

@@ -1,6 +1,8 @@
-# Rental Tracker Documentation
+# Upa OS Documentation
 
-Welcome to the Rental Tracker documentation.
+*Rental management simplified*
+
+Welcome to the Upa OS documentation.
 
 ## Documentation Structure
 
@@ -34,6 +36,6 @@ Following this order provides complete context before implementation.
 
 ## Goal
 
-Provide a single source of truth for building and maintaining the Rental
-Tracker application using both human developers and AI coding
+Provide a single source of truth for building and maintaining the Upa OS
+application using both human developers and AI coding
 assistants.

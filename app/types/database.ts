@@ -36,6 +36,7 @@ export type Database = {
     Tables: {
       billing_cycles: {
         Row: {
+          billing_date: string
           created_at: string
           id: string
           month: number
@@ -45,6 +46,7 @@ export type Database = {
           year: number
         }
         Insert: {
+          billing_date: string
           created_at?: string
           id?: string
           month: number
@@ -54,6 +56,7 @@ export type Database = {
           year: number
         }
         Update: {
+          billing_date?: string
           created_at?: string
           id?: string
           month?: number
@@ -291,21 +294,27 @@ export type Database = {
         Row: {
           created_at: string
           default_electricity_rate: number
+          email_notifications_enabled: boolean
           id: string
+          in_app_notifications_enabled: boolean
           property_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           default_electricity_rate?: number
+          email_notifications_enabled?: boolean
           id?: string
+          in_app_notifications_enabled?: boolean
           property_id: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           default_electricity_rate?: number
+          email_notifications_enabled?: boolean
           id?: string
+          in_app_notifications_enabled?: boolean
           property_id?: string
           updated_at?: string
         }
@@ -326,13 +335,16 @@ export type Database = {
           created_at: string
           due_day: number | null
           email: string | null
+          end_date: string | null
           full_name: string
           id: string
           mobile: string | null
           monthly_rent: number
           notes: string | null
           security_deposit: number
+          start_date: string
           unit_id: string
+          updated_at: string
         }
         Insert: {
           active?: boolean
@@ -340,13 +352,16 @@ export type Database = {
           created_at?: string
           due_day?: number | null
           email?: string | null
+          end_date?: string | null
           full_name: string
           id?: string
           mobile?: string | null
           monthly_rent?: number
           notes?: string | null
           security_deposit?: number
+          start_date: string
           unit_id: string
+          updated_at?: string
         }
         Update: {
           active?: boolean
@@ -354,13 +369,16 @@ export type Database = {
           created_at?: string
           due_day?: number | null
           email?: string | null
+          end_date?: string | null
           full_name?: string
           id?: string
           mobile?: string | null
           monthly_rent?: number
           notes?: string | null
           security_deposit?: number
+          start_date?: string
           unit_id?: string
+          updated_at?: string
         }
         Relationships: [
           {

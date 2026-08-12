@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-08-06
-project: Rental Tracker
+project: Upa OS
 status: Draft
 title: 12-notification-system
 version: 1.0.0

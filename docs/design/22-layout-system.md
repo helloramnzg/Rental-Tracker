@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 19-design-system.md
 - 20-design-tokens.md
@@ -15,7 +15,7 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines the structural layout of Rental Tracker. It
+This document defines the structural layout of Upa OS. It
 establishes how pages are composed, how users navigate the application,
 and how content is organised consistently across every screen.
 
@@ -345,7 +345,7 @@ without changing the core application shell.
 
 # Summary
 
-The Layout System defines the structural foundation of Rental Tracker.
+The Layout System defines the structural foundation of Upa OS.
 Every screen should inherit the same navigation, spacing, and content
 hierarchy, creating a predictable and efficient user experience that
 scales as the application grows.

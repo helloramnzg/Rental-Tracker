@@ -63,6 +63,17 @@ function formatCurrency(value: number) {
   }).format(Number.isFinite(value) ? value : 0);
 }
 
+// Builds "YYYY-MM-DD" from local date parts, not toISOString() (which
+// converts to UTC first and can shift the calendar day backward in
+// timezones ahead of UTC).
+function todayIso() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function BillingForm({
   year,
   month,
@@ -76,14 +87,18 @@ export function BillingForm({
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const isLocked =
-    context.existingCycle !== null &&
-    context.existingCycle.billingCycle.status !== "draft";
+  // Only "closed" cycles are locked — billing edits are otherwise
+  // always allowed, including after SOA generation (explicit product
+  // decision: edits recalculate and regenerate automatically, see
+  // services/billing/save-billing-cycle.ts). No workflow currently
+  // sets a cycle to "closed", so isClosed is a forward-looking guard.
+  const isClosed = context.existingCycle?.billingCycle.status === "closed";
 
   const defaultValues: BillingFormValues = useMemo(
     () => ({
       year,
       month,
+      billingDate: context.existingCycle?.billingCycle.billing_date ?? todayIso(),
       motherMeterBill: context.existingCycle?.billingCycle.mother_meter_bill ?? 0,
       previousReading: context.previousReading,
       currentReading:
@@ -164,7 +179,20 @@ export function BillingForm({
       return;
     }
 
-    setSuccessMessage("Billing cycle saved.");
+    const { ownSoaRegenerated, cascade } = result.data;
+    const notes: string[] = [];
+    if (ownSoaRegenerated) notes.push("its SOA was regenerated");
+    if (cascade.cascadedCycles > 0) {
+      notes.push(
+        `${cascade.cascadedCycles} later billing cycle${cascade.cascadedCycles === 1 ? "" : "s"} recalculated` +
+          (cascade.regeneratedSoaCycles > 0
+            ? ` (${cascade.regeneratedSoaCycles} SOA${cascade.regeneratedSoaCycles === 1 ? "" : "s"} regenerated)`
+            : ""),
+      );
+    }
+    setSuccessMessage(
+      notes.length > 0 ? `Billing cycle saved — ${notes.join("; ")}.` : "Billing cycle saved.",
+    );
     router.refresh();
   }
 
@@ -173,7 +201,10 @@ export function BillingForm({
       errs;
   }
 
-  const yearOptions = [year - 1, year, year + 1];
+  const yearOptions = Array.from(
+    { length: 2035 - (year - 1) + 1 },
+    (_, i) => year - 1 + i,
+  );
 
   return (
     <form
@@ -183,11 +214,10 @@ export function BillingForm({
       }}
       className="flex flex-col gap-6 pb-24"
     >
-      {isLocked && (
+      {isClosed && (
         <Alert>
           <AlertDescription>
-            This billing cycle is no longer a draft and can&apos;t be edited
-            here.
+            This billing cycle is closed and can&apos;t be edited here.
           </AlertDescription>
         </Alert>
       )}
@@ -214,10 +244,12 @@ export function BillingForm({
             <Select
               value={String(month)}
               onValueChange={handleMonthChange}
-              disabled={isLocked}
+              disabled={isClosed}
             >
               <SelectTrigger className="w-48">
-                <SelectValue />
+                <SelectValue>
+                  {(value: string) => MONTH_NAMES[Number(value) - 1]}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {MONTH_NAMES.map((name, i) => (
@@ -233,7 +265,7 @@ export function BillingForm({
             <Select
               value={String(year)}
               onValueChange={handleYearChange}
-              disabled={isLocked}
+              disabled={isClosed}
             >
               <SelectTrigger className="w-32">
                 <SelectValue />
@@ -246,6 +278,21 @@ export function BillingForm({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="billingDate">Billing Date</Label>
+            <Input
+              id="billingDate"
+              type="date"
+              disabled={isClosed}
+              aria-invalid={!!errors.billingDate}
+              {...register("billingDate")}
+            />
+            {errors.billingDate && (
+              <p className="text-caption text-destructive">
+                {errors.billingDate.message}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -261,7 +308,7 @@ export function BillingForm({
               id="motherMeterBill"
               type="number"
               step="0.01"
-              disabled={isLocked}
+              disabled={isClosed}
               aria-invalid={!!errors.motherMeterBill}
               {...register("motherMeterBill", { valueAsNumber: true })}
             />
@@ -278,7 +325,7 @@ export function BillingForm({
               id="electricityRate"
               type="number"
               step="0.01"
-              disabled={isLocked}
+              disabled={isClosed}
               aria-invalid={!!errors.electricityRate}
               {...register("electricityRate", { valueAsNumber: true })}
             />
@@ -296,10 +343,19 @@ export function BillingForm({
             <Input
               id="previousReading"
               type="number"
-              readOnly
-              className="bg-muted text-muted-foreground"
+              step="0.01"
+              disabled={isClosed}
+              aria-invalid={!!errors.previousReading}
               {...register("previousReading", { valueAsNumber: true })}
             />
+            {errors.previousReading && (
+              <p className="text-caption text-destructive">
+                {errors.previousReading.message}
+              </p>
+            )}
+            <p className="text-caption text-muted-foreground">
+              Pre-filled from last month&apos;s reading — edit if it&apos;s wrong.
+            </p>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -308,7 +364,7 @@ export function BillingForm({
               id="currentReading"
               type="number"
               step="0.01"
-              disabled={isLocked}
+              disabled={isClosed}
               aria-invalid={!!errors.currentReading}
               {...register("currentReading", { valueAsNumber: true })}
             />
@@ -375,7 +431,7 @@ export function BillingForm({
             <TableBody>
               {tenantRows.map((row) => (
                 <TableRow key={row.tenantInfo.tenant.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-semibold">
                     <input
                       type="hidden"
                       {...register(
@@ -390,7 +446,7 @@ export function BillingForm({
                       type="number"
                       step="0.01"
                       className="w-28"
-                      disabled={isLocked}
+                      disabled={isClosed}
                       {...register(
                         `tenantCharges.${row.index}.rent` as const,
                         { valueAsNumber: true },
@@ -404,7 +460,7 @@ export function BillingForm({
                       type="number"
                       step="0.01"
                       className="w-28"
-                      disabled={isLocked}
+                      disabled={isClosed}
                       {...register(
                         `tenantCharges.${row.index}.otherCharges` as const,
                         { valueAsNumber: true },
@@ -441,12 +497,12 @@ export function BillingForm({
       <div className="sticky bottom-0 flex items-center justify-between gap-4 border-t border-border bg-background py-4">
         <div>
           {context.existingCycle && (
-            <Badge variant={isLocked ? "secondary" : "outline"}>
+            <Badge variant={isClosed ? "default" : "neutral"}>
               {context.existingCycle.billingCycle.status}
             </Badge>
           )}
         </div>
-        <Button type="submit" disabled={isSubmitting || isLocked}>
+        <Button type="submit" disabled={isSubmitting || isClosed}>
           <Save className="mr-1.5" size={16} />
           {isSubmitting ? "Saving…" : "Save Billing Cycle"}
         </Button>

@@ -7,6 +7,7 @@ import type { SoaScreenContext } from "@/services/soa/get-soa-screen-context";
 import { generateSoaAction } from "@/features/soa/actions/generate-soa";
 import { getSoaDownloadUrlAction } from "@/features/soa/actions/download-soa";
 import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -41,16 +42,19 @@ function formatDateTime(iso: string) {
 export function SoaView({
   year,
   month,
+  monthLabel,
   context,
 }: {
   year: number;
   month: number;
+  monthLabel: string;
   context: SoaScreenContext;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadingAll, setDownloadingAll] = useState(false);
 
   function handleMonthChange(nextMonth: string | null) {
     if (!nextMonth) return;
@@ -92,84 +96,128 @@ export function SoaView({
     window.open(result.data.url, "_blank", "noopener,noreferrer");
   }
 
-  const yearOptions = [year - 1, year, year + 1];
+  async function handleDownloadAll() {
+    setError(null);
+    setDownloadingAll(true);
+    const generated = context.cards.filter((c) => c.generatedSoaId);
+    for (const card of generated) {
+      const result = await getSoaDownloadUrlAction({
+        generatedSoaId: card.generatedSoaId!,
+        mode: "download",
+      });
+      if (!result.success) {
+        setError(result.error.message);
+        continue;
+      }
+      // Anchor-click downloads rather than window.open — opening N
+      // new tabs gets popup-blocked after the first; triggering N
+      // file downloads this way does not.
+      const link = document.createElement("a");
+      link.href = result.data.url;
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+    setDownloadingAll(false);
+  }
+
+  const yearOptions = Array.from(
+    { length: 2035 - (year - 1) + 1 },
+    (_, i) => year - 1 + i,
+  );
   const hasAnySoa = context.cards.some((c) => c.generatedSoaId);
 
   return (
-    <div className="flex flex-col gap-6">
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+    <>
+      <PageHeader
+        eyebrow={monthLabel}
+        title="Statements of Account"
+        description="Generate from saved billing snapshots, then preview or download each statement."
+        action={
+          context.billingCycle && hasAnySoa ? (
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handleDownloadAll} disabled={downloadingAll}>
+                <Download className="mr-1.5" size={16} />
+                {downloadingAll ? "Downloading…" : "Download All"}
+              </Button>
+              <Button variant="outline" onClick={handleGenerate} disabled={generating}>
+                <RefreshCw className="mr-1.5" size={16} />
+                {generating ? "Regenerating…" : "Regenerate All"}
+              </Button>
+            </div>
+          ) : undefined
+        }
+      />
+      <div className="flex flex-col gap-6">
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Billing Month</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-4">
-          <Select value={String(month)} onValueChange={handleMonthChange}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {MONTH_NAMES.map((name, i) => (
-                <SelectItem key={name} value={String(i + 1)}>
-                  {name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={String(year)} onValueChange={handleYearChange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {yearOptions.map((y) => (
-                <SelectItem key={y} value={String(y)}>
-                  {y}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Billing Month</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-4">
+            <Select value={String(month)} onValueChange={handleMonthChange}>
+              <SelectTrigger className="w-48">
+                <SelectValue>
+                  {(value: string) => MONTH_NAMES[Number(value) - 1]}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {MONTH_NAMES.map((name, i) => (
+                  <SelectItem key={name} value={String(i + 1)}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={String(year)} onValueChange={handleYearChange}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {yearOptions.map((y) => (
+                  <SelectItem key={y} value={String(y)}>
+                    {y}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
 
-      {!context.billingCycle && (
-        <EmptyState
-          icon={FileText}
-          title="No billing cycle exists for this month yet."
-          description="Complete Monthly Billing for this month before generating Statements of Account."
-        />
-      )}
+        {!context.billingCycle && (
+          <EmptyState
+            icon={FileText}
+            title="No billing cycle exists for this month yet."
+            description="Complete Monthly Billing for this month before generating Statements of Account."
+          />
+        )}
 
-      {context.billingCycle && !hasAnySoa && (
-        <EmptyState
-          icon={FileText}
-          title="No Statements of Account have been generated."
-          action={
-            <Button onClick={handleGenerate} disabled={generating}>
-              {generating ? "Generating…" : "Generate SOAs"}
-            </Button>
-          }
-        />
-      )}
+        {context.billingCycle && !hasAnySoa && (
+          <EmptyState
+            icon={FileText}
+            title="No Statements of Account have been generated."
+            action={
+              <Button onClick={handleGenerate} disabled={generating}>
+                {generating ? "Generating…" : "Generate SOAs"}
+              </Button>
+            }
+          />
+        )}
 
-      {context.billingCycle && hasAnySoa && (
-        <>
-          <div className="flex justify-end">
-            <Button variant="outline" onClick={handleGenerate} disabled={generating}>
-              <RefreshCw className="mr-1.5" size={16} />
-              {generating ? "Regenerating…" : "Regenerate All"}
-            </Button>
-          </div>
+        {context.billingCycle && hasAnySoa && (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {context.cards.map((card) => (
               <Card key={card.tenantId}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>{card.tenantName}</CardTitle>
-                    <Badge variant={card.generatedSoaId ? "default" : "secondary"}>
+                    <Badge variant={card.generatedSoaId ? "default" : "neutral"}>
                       {card.generatedSoaId ? "Generated" : "Pending"}
                     </Badge>
                   </div>
@@ -210,8 +258,8 @@ export function SoaView({
               </Card>
             ))}
           </div>
-        </>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }

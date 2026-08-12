@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { createClient } from "@/lib/supabase/server";
+import { getPropertySummary } from "@/services/shell/get-property-summary";
 import { AppShell } from "@/components/layout/app-shell";
 
 // Every authenticated page reads live billing/tenant/payment data via
@@ -9,6 +11,9 @@ import { AppShell } from "@/components/layout/app-shell";
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-export default function AppGroupLayout({ children }: { children: ReactNode }) {
-  return <AppShell>{children}</AppShell>;
+export default async function AppGroupLayout({ children }: { children: ReactNode }) {
+  const supabase = await createClient();
+  const property = await getPropertySummary(supabase);
+
+  return <AppShell property={property}>{children}</AppShell>;
 }

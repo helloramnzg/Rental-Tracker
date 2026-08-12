@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 00-project-charter.md
 - 01-product-vision.md
@@ -14,13 +14,13 @@ version: 1.0.0
 
 ## Purpose
 
-This document is the single source of truth for how Rental Tracker works from a product perspective. It describes the property, billing process, business rules, reminders, SOA lifecycle, and current scope.
+This document is the single source of truth for how Upa OS works from a product perspective. It describes the property, billing process, business rules, reminders, SOA lifecycle, and current scope.
 
 ---
 
 # 1. Product Overview
 
-Rental Tracker is a lightweight web application built for a single landlord managing one residential property with two rental units.
+Upa OS is a lightweight web application built for a single landlord managing one residential property with two rental units.
 
 Its primary purpose is to replace manual spreadsheets by streamlining monthly billing, electricity calculations, SOA generation, payment tracking, and reminders.
 

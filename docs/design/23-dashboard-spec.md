@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 19-design-system.md
 - 20-design-tokens.md
@@ -224,7 +224,7 @@ These actions should remain visible without scrolling.
 
 Display:
 
-"Welcome to Rental Tracker"
+"Welcome to Upa OS"
 
 Button:
 

@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-08-06
-project: Rental Tracker
+project: Upa OS
 status: Draft
 title: 10-business-rules
 version: 1.0.0

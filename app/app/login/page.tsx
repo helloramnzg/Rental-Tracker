@@ -1,19 +1,28 @@
 import { LoginForm } from "./login-form";
+import { MarketingPanel } from "./marketing-panel";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-6">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center gap-2 text-center">
-          <div className="flex size-10 items-center justify-center rounded-[10px] bg-primary text-sm font-semibold text-primary-foreground">
-            RT
+    <div className="flex min-h-screen bg-background lg:p-6">
+      <div className="flex w-full flex-col lg:flex-row lg:gap-8">
+        <div className="flex flex-1 items-center justify-center px-6 py-12 lg:px-12">
+          <div className="w-full max-w-[410px]">
+            <div className="mb-8 flex items-center gap-2 lg:hidden">
+              <img
+                src="/brand/logo-mark.svg"
+                alt="Upa OS"
+                className="h-8 w-auto"
+              />
+              <span className="text-lg font-bold text-foreground">
+                Upa OS
+              </span>
+            </div>
+            <LoginForm />
           </div>
-          <h1 className="text-h2 text-foreground">Rental Tracker</h1>
-          <p className="text-small text-muted-foreground">
-            Sign in to continue.
-          </p>
         </div>
-        <LoginForm />
+        <div className="hidden flex-1 lg:block">
+          <MarketingPanel />
+        </div>
       </div>
     </div>
   );

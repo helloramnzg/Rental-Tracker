@@ -96,6 +96,7 @@ export async function getBillingContext(
           year: cycle.year,
           month: cycle.month,
           mother_meter_bill: cycle.mother_meter_bill,
+          billing_date: cycle.billing_date,
           status: cycle.status,
           created_at: cycle.created_at,
         },

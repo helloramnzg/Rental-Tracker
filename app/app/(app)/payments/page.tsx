@@ -1,12 +1,27 @@
-import { Wallet } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { createClient } from "@/lib/supabase/server";
+import { getPaymentsContext } from "@/services/payments/get-payments-context";
+import { PaymentsView } from "@/features/payments/components/payments-view";
+import { formatMonthLabel } from "@/utils/format-month-label";
 
-export default function PaymentsPage() {
+export default async function PaymentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ year?: string; month?: string }>;
+}) {
+  const params = await searchParams;
+  const now = new Date();
+  const year = params.year ? Number(params.year) : now.getFullYear();
+  const month = params.month ? Number(params.month) : now.getMonth() + 1;
+
+  const supabase = await createClient();
+  const context = await getPaymentsContext(supabase, { year, month });
+
   return (
-    <>
-      <PageHeader title="Payments" />
-      <EmptyState icon={Wallet} title="No payments have been recorded yet." />
-    </>
+    <PaymentsView
+      year={year}
+      month={month}
+      monthLabel={formatMonthLabel(year, month)}
+      context={context}
+    />
   );
 }

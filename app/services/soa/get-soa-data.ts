@@ -1,7 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
+import {
+  computePaymentStatus,
+  type PaymentStatus,
+} from "@/services/payments/compute-payment-status";
 
-export type PaymentStatus = "outstanding" | "partial" | "paid";
+export type { PaymentStatus };
 
 export type SoaData = {
   property: { name: string; address: string | null };
@@ -25,12 +29,6 @@ export type SoaData = {
   amountPaid: number;
   paymentStatus: PaymentStatus;
 };
-
-function computePaymentStatus(totalDue: number, amountPaid: number): PaymentStatus {
-  if (amountPaid <= 0) return "outstanding";
-  if (amountPaid >= totalDue) return "paid";
-  return "partial";
-}
 
 // Loads everything needed to render an SOA, entirely from the stored
 // billing snapshot (docs/architecture/10-pdf-generation.md: "PDFs are

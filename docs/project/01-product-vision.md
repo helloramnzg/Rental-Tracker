@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 00-project-charter.md
 - 02-product-knowledge-base.md
@@ -14,7 +14,7 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines how Rental Tracker should feel, behave, and
+This document defines how Upa OS should feel, behave, and
 evolve.
 
 It is the decision-making guide for product design, user experience, and
@@ -25,7 +25,7 @@ or designing a screen, these principles take precedence.
 
 # Product Vision
 
-Rental Tracker should feel like a calm monthly assistant rather than
+Upa OS should feel like a calm monthly assistant rather than
 accounting software.
 
 The application exists to reduce cognitive load. It should guide the

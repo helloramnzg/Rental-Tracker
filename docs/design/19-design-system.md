@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - ../01-product-vision.md
 status: Draft
@@ -13,7 +13,7 @@ version: 2.0.0
 
 ## Vision
 
-Rental Tracker should feel like a premium modern SaaS product. The
+Upa OS should feel like a premium modern SaaS product. The
 experience should be calm, spacious, approachable, and highly
 functional, inspired by products like Linear, Stripe, Notion and the
 provided dashboard reference. The design system intentionally avoids
@@ -75,7 +75,7 @@ The interface should look inviting rather than technical.
 
 ## Font
 
-Inter
+DM Sans
 
   Style       Size   Weight
   --------- ------ --------
@@ -115,7 +115,7 @@ Requirements:
 
 # Buttons
 
-Primary: - Dark green background - White text
+Primary: - Bright green background - Dark green text
 
 Secondary: - White background - Border only
 

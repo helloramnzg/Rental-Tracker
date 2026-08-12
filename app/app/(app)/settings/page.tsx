@@ -1,31 +1,26 @@
+import { createClient } from "@/lib/supabase/server";
+import { getSettingsContext } from "@/services/settings/get-settings-context";
+import { getCurrentUserContext } from "@/services/settings/get-current-user-context";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { SettingsView } from "@/features/settings/components/settings-view";
 
-// Reflects docs/design/26-settings-screen.md as currently documented.
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const supabase = await createClient();
+  const [settings, user] = await Promise.all([
+    getSettingsContext(supabase),
+    getCurrentUserContext(supabase),
+  ]);
+
+  // Middleware already guarantees an authenticated session for this
+  // route (lib/supabase/middleware.ts), so `user` is never null here.
   return (
     <>
-      <PageHeader title="Settings" />
-      <Card>
-        <CardHeader>
-          <CardTitle>Electricity Rate</CardTitle>
-          <CardDescription>
-            Configurable by the landlord. Defaults to ₱15.00 / kWh.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-small text-muted-foreground">
-            Changes apply only to future billing cycles and do not modify
-            previously generated SOAs.
-          </p>
-        </CardContent>
-      </Card>
+      <PageHeader
+        eyebrow="Workspace configuration"
+        title="Settings"
+        description="Property, billing, profile, security, and notification preferences."
+      />
+      <SettingsView settings={settings} user={user!} />
     </>
   );
 }

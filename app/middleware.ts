@@ -7,6 +7,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // api/cron/* is excluded: those routes authenticate via CRON_SECRET
+    // (see lib/cron-auth.ts), not a Supabase user session — a cron
+    // trigger has no session cookie and would otherwise always be
+    // redirected to /login before reaching the route handler.
+    "/((?!_next/static|_next/image|favicon.ico|api/cron|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

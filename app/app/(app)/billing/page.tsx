@@ -18,7 +18,11 @@ export default async function BillingPage({
 
   return (
     <>
-      <PageHeader title="Monthly Billing" />
+      <PageHeader
+        eyebrow="Editable calculation"
+        title="Monthly Billing"
+        description="Save the billing cycle, then generate Statements of Account."
+      />
       <BillingForm year={year} month={month} context={context} />
     </>
   );

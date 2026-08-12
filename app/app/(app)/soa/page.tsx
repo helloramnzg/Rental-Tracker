@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getSoaScreenContext } from "@/services/soa/get-soa-screen-context";
-import { PageHeader } from "@/components/layout/page-header";
 import { SoaView } from "@/features/soa/components/soa-view";
+import { formatMonthLabel } from "@/utils/format-month-label";
 
 export default async function SoaPage({
   searchParams,
@@ -17,9 +17,11 @@ export default async function SoaPage({
   const context = await getSoaScreenContext(supabase, { year, month });
 
   return (
-    <>
-      <PageHeader title="Statements of Account" />
-      <SoaView year={year} month={month} context={context} />
-    </>
+    <SoaView
+      year={year}
+      month={month}
+      monthLabel={formatMonthLabel(year, month)}
+      context={context}
+    />
   );
 }

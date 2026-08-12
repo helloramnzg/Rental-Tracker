@@ -9,6 +9,7 @@ import {
 import {
   saveBillingCycle,
   BillingCycleNotEditableError,
+  type SaveBillingCycleResult,
 } from "@/services/billing/save-billing-cycle";
 
 // Standard response shape per docs/architecture/07-api-design.md.
@@ -18,7 +19,7 @@ export type ActionResult<T> =
 
 export async function saveBillingCycleAction(
   input: BillingFormValues,
-): Promise<ActionResult<{ billingCycleId: string }>> {
+): Promise<ActionResult<SaveBillingCycleResult>> {
   const parsed = billingFormSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -45,6 +46,8 @@ export async function saveBillingCycleAction(
   try {
     const result = await saveBillingCycle(supabase, parsed.data);
     revalidatePath("/billing");
+    revalidatePath("/soa");
+    revalidatePath("/payments");
     revalidatePath("/dashboard");
     return { success: true, data: result };
   } catch (error) {

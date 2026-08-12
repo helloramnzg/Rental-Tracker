@@ -2,7 +2,7 @@
 
 # Technology Stack
 
-The Rental Tracker application is intentionally built using modern, free, and low-maintenance technologies. Every technology choice prioritises simplicity, reliability, and long-term maintainability over unnecessary complexity.
+The Upa OS application is intentionally built using modern, free, and low-maintenance technologies. Every technology choice prioritises simplicity, reliability, and long-term maintainability over unnecessary complexity.
 
 ---
 

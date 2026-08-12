@@ -36,7 +36,7 @@ values
 
 insert into tenants (
   id, unit_id, full_name, email, mobile, monthly_rent, due_day,
-  security_deposit, advance_rent, active
+  security_deposit, advance_rent, start_date, end_date, active
 )
 values
   (
@@ -49,6 +49,8 @@ values
     5,
     16000.00,
     8000.00,
+    '2026-01-01',
+    null,
     true
   ),
   (
@@ -61,6 +63,8 @@ values
     5,
     17000.00,
     8500.00,
+    '2026-01-01',
+    null,
     true
   );
 

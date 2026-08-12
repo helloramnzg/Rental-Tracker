@@ -40,8 +40,8 @@ export function MobileNav() {
         className="w-sidebar-width max-w-[80vw] bg-sidebar p-0 text-sidebar-foreground"
       >
         <SheetHeader className="h-topbar-height justify-center border-b border-sidebar-border px-4">
-          <SheetTitle className="text-base font-semibold text-sidebar-foreground">
-            Rental Tracker
+          <SheetTitle className="text-lg font-bold text-sidebar-foreground">
+            Upa OS
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-3 py-2">
@@ -54,14 +54,14 @@ export function MobileNav() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium",
+                  "flex items-center gap-3 rounded-[10px] px-3 py-2 text-small",
                   "transition-colors duration-fast ease-standard",
                   active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/60",
+                    ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
+                    : "font-normal text-sidebar-foreground hover:bg-sidebar-accent/60",
                 )}
               >
-                <Icon size={20} className="shrink-0" />
+                <Icon size={20} weight={active ? "fill" : "regular"} className="shrink-0" />
                 {item.label}
               </Link>
             );

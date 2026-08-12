@@ -1,5 +1,5 @@
 ---
-project: Rental Tracker
+project: Upa OS
 status: Draft
 title: SOA Screen Specification
 version: 1.0.0

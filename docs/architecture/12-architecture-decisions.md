@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 04-tech-stack.md
@@ -16,8 +16,8 @@ version: 1.0.0
 
 ## Purpose
 
-This document records the key architectural decisions made for Rental
-Tracker and explains why they were chosen. It serves as the project's
+This document records the key architectural decisions made for Upa OS
+and explains why they were chosen. It serves as the project's
 Architecture Decision Record (ADR) log.
 
 ------------------------------------------------------------------------

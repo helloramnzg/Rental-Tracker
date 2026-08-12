@@ -175,14 +175,13 @@ In priority order, roughly matching what's blocking what:
 
 ## 5. Technical debt
 
-- **No tests anywhere.** `tests/` is an empty placeholder dir.
-  `docs/development/28-testing-strategy.md` describes a full pyramid;
-  none of it exists. Given how much of this session was spent
-  debugging UI-interaction flakiness that turned out to be
-  environmental, integration tests around the Server Actions (which
-  can run headlessly against the local Supabase instance, as this
-  session's verification scripts did) would have caught real
-  regressions much faster than browser-based testing did.
+- ~~No tests anywhere.~~ **Resolved in Phase 15.** `docs/development/
+  28-testing-strategy.md`'s full pyramid now exists: Vitest
+  unit+integration (`tests/unit/`, `tests/integration/`) and
+  Playwright E2E (`tests/e2e/`) — 137 tests total. See CHANGELOG.md
+  Phase 15 and `tests/support/README.md` for the fixture-isolation
+  strategy (this app has exactly one property, which shapes
+  everything). `npm run test` runs all three layers.
 - **Currency formatting duplicated** across `billing-form.tsx`,
   `soa-view.tsx`, and `generate-soa-pdf.ts` (three near-identical
   `formatCurrency` functions). Should be one function in `utils/`

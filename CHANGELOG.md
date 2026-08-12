@@ -4,6 +4,84 @@ All notable changes to Rental Tracker are recorded here, grouped by
 the phase they were built in. This project follows no formal release
 numbering yet — it is pre-v1, still in initial implementation.
 
+## Phase 15 — Testing
+
+### Added
+- **Vitest** (`vitest.config.mts`) with two projects:
+  - `unit` — pure functions only (billing/payment calculations, Zod
+    schemas, email template rendering, cron-auth, upcoming-reminder
+    date math). 77 tests, no network/DB.
+  - `integration` — hits the local Supabase instance directly through
+    a signed-in `authenticated`-role client (never the service-role
+    client for application-table writes — see below). Forced to a
+    single fork/no file parallelism. 49 tests covering Billing (save,
+    previous-balance carry-forward, cross-cycle cascade recalculation),
+    SOA (generation, storage, regeneration-overwrites-in-place),
+    Payments (record/update/delete, partial/overpayment/closed-cycle
+    edge cases), Settings (property/billing/notifications), the auth
+    middleware (session redirect logic via a captured real
+    `@supabase/ssr` cookie), and Notifications (`sendReminderEmail` +
+    all three `/api/cron/*` routes, with Resend always mocked).
+- **Playwright** (`playwright.config.ts`) — 11 E2E specs covering full
+  user journeys (not individual validation rules) for Authentication,
+  Billing, Payments, SOA, and Settings. Runs against a **production
+  build** (`npm run build && npm run start`), not `next dev` — see
+  Fixed below.
+- `tests/support/` — the fixture/isolation layer all of the above
+  shares:
+  - `factories/{tenant,billing-cycle,payment,soa,settings}.ts` —
+    Billing/Payments/SOA fixtures create an ephemeral unit + tenant
+    under the real (singleton) property at a random far-future
+    year/month, so they never touch the two real seeded
+    tenants/units or a real billing month. Settings has no such
+    trick available (it's a genuine one-row-per-property singleton)
+    — its tests snapshot the real row and restore it in
+    `afterEach`/`afterAll` instead.
+  - `env-guard.ts` — `assertLocalSupabaseEnvironment()`, called by
+    every fixture/client helper; refuses to run against anything
+    whose `NEXT_PUBLIC_SUPABASE_URL` host isn't 127.0.0.1/localhost.
+  - `ensure-test-user.ts` — idempotently creates/repairs the
+    documented test landlord account via the Auth admin API (works
+    across `npm run db:reset`, which wipes `auth.users`).
+  - `clients.ts` / `auth-cookies.ts` / `e2e-login.ts` — sign in as
+    that landlord for integration tests (`signInAsLandlord`), or
+    capture the resulting session cookies for direct middleware
+    testing, or drive the real login form for E2E.
+  - Full rationale in `tests/support/README.md`.
+- `.env.test.example` (committed) / `.env.test` (gitignored) — test-
+  only env overrides (fake `FROM_EMAIL`/`OWNER_EMAIL`/`CRON_SECRET`,
+  test landlord credentials); layered on top of `.env.local` by
+  `tests/support/load-env.ts`.
+- `npm run test:unit` / `test:integration` / `test:e2e` / `test`
+  (runs all three in order).
+
+### Fixed
+- **Confirmed empirically, not assumed**: `SUPABASE_SERVICE_ROLE_KEY`
+  has no table GRANTs in this project's local setup beyond `SELECT` on
+  `properties`/`settings` (bypassing RLS ≠ having a Postgres GRANT).
+  Attempting `service_role` writes to `tenants` fails with `42501`.
+  This ruled out using the service-role client for fixture setup/
+  teardown on any application table — see
+  `tests/support/README.md` "Service-role client: read-only in
+  practice".
+- Every factory `cleanup()` initially swallowed Supabase's returned
+  `error` instead of throwing. One test's incorrect teardown order (a
+  tenant deleted before the billing cycle whose `charges` row still
+  referenced it, hitting the `ON DELETE RESTRICT` FK) failed silently
+  and leaked a unit+tenant row into the real dev database with no
+  test failure to flag it. Fixed by having every cleanup check and
+  throw on error, and fixing the one test's ordering
+  (`tests/integration/billing/save-billing-cycle.test.ts`).
+- Playwright's login journeys were flaky against `next dev`: a click
+  on the "Sign in" button could land before Turbopack's on-demand
+  compile finished attaching React's `onSubmit` handler, so the
+  browser fell back to a native GET form submission
+  (`/login?email=...&password=...`) instead of authenticating. Even
+  `page.waitForLoadState("networkidle")` didn't reliably avoid it.
+  Switched Playwright's `webServer` to a production build, which
+  doesn't have the on-demand-compile window — matches the precedent
+  in HANDOVER.md for browser-automation flakiness in this repo.
+
 ## Phase 6 — SOA Generation
 
 ### Added

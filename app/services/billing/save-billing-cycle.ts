@@ -3,25 +3,45 @@ import type { Database } from "@/types/database";
 import { calculateElectricity } from "./calculate-electricity";
 import { calculateCharges } from "./calculate-charges";
 import { getPreviousBalance } from "./get-previous-balance";
+import { recalculateSubsequentCycles, type CascadeResult } from "./recalculate-subsequent-cycles";
+import { generateSoasForBillingCycle } from "@/services/soa/generate-and-store-soa";
 import type { BillingFormValues } from "@/features/billing/validation/schema";
 
 export class BillingCycleNotEditableError extends Error {
   constructor() {
-    super("This billing cycle is no longer editable.");
+    super("This billing cycle is closed and can no longer be edited.");
     this.name = "BillingCycleNotEditableError";
   }
 }
 
+export type SaveBillingCycleResult = {
+  billingCycleId: string;
+  ownSoaRegenerated: boolean;
+  cascade: CascadeResult;
+};
+
 // Orchestrates a full billing cycle save: resolves the property,
 // calculates electricity and per-tenant charges, and upserts
-// billing_cycles / meter_readings / charges. Only ever writes cycles
-// with status "draft" — per docs/architecture/06-database-design.md,
-// closed cycles are read-only, and SOA generation (which advances
-// status further) is out of scope for this phase.
+// billing_cycles / meter_readings / charges.
+//
+// Billing edits are allowed at any time, including after SOA
+// generation (explicit product decision — see HANDOVER.md and the
+// git history around this change for the tradeoffs). Editing a cycle:
+//   1. Recalculates that cycle's own charges from the new inputs.
+//   2. If that cycle already had a generated SOA, regenerates it so
+//      the PDF matches the corrected numbers.
+//   3. Cascades forward through every later cycle for this property,
+//      since each cycle's previous_balance is derived from the prior
+//      cycle's total_due (services/billing/get-previous-balance.ts) —
+//      see recalculate-subsequent-cycles.ts.
+// Only "closed" cycles remain genuinely locked (docs/business/
+// 10-business-rules.md "Closed cycles are read-only") — no current
+// workflow sets that status, so this is a forward-looking guard, not
+// active behaviour today.
 export async function saveBillingCycle(
   supabase: SupabaseClient<Database>,
   input: BillingFormValues,
-): Promise<{ billingCycleId: string }> {
+): Promise<SaveBillingCycleResult> {
   const { data: property, error: propertyError } = await supabase
     .from("properties")
     .select("id")
@@ -53,16 +73,18 @@ export async function saveBillingCycle(
     .maybeSingle();
   if (existingError) throw existingError;
 
-  if (existingCycle && existingCycle.status !== "draft") {
+  if (existingCycle && existingCycle.status === "closed") {
     throw new BillingCycleNotEditableError();
   }
+
+  const hadSoaBeforeSave = existingCycle?.status === "soa_generated";
 
   let billingCycleId = existingCycle?.id;
 
   if (billingCycleId) {
     const { error } = await supabase
       .from("billing_cycles")
-      .update({ mother_meter_bill: input.motherMeterBill })
+      .update({ mother_meter_bill: input.motherMeterBill, billing_date: input.billingDate })
       .eq("id", billingCycleId);
     if (error) throw error;
   } else {
@@ -73,6 +95,7 @@ export async function saveBillingCycle(
         year: input.year,
         month: input.month,
         mother_meter_bill: input.motherMeterBill,
+        billing_date: input.billingDate,
         status: "draft",
       })
       .select("id")
@@ -134,5 +157,17 @@ export async function saveBillingCycle(
     if (chargeError) throw chargeError;
   }
 
-  return { billingCycleId };
+  let ownSoaRegenerated = false;
+  if (hadSoaBeforeSave) {
+    await generateSoasForBillingCycle(supabase, { billingCycleId });
+    ownSoaRegenerated = true;
+  }
+
+  const cascade = await recalculateSubsequentCycles(supabase, {
+    propertyId: property.id,
+    afterYear: input.year,
+    afterMonth: input.month,
+  });
+
+  return { billingCycleId, ownSoaRegenerated, cascade };
 }

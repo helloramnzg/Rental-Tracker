@@ -1,4 +1,6 @@
-# Rental Tracker
+# Upa OS
+
+*Rental management simplified*
 
 ## Project Charter
 
@@ -8,7 +10,7 @@
 
 # Vision
 
-Rental Tracker is a private web application that streamlines the monthly
+Upa OS is a private web application that streamlines the monthly
 rental billing process for a small residential property.
 
 The application replaces the existing spreadsheet-based workflow with a
@@ -17,7 +19,7 @@ administrative work while keeping the landlord in full control of tenant
 communications.
 
 The goal is not to become a comprehensive property management platform.
-Instead, Rental Tracker focuses on doing one job exceptionally well:
+Instead, Upa OS focuses on doing one job exceptionally well:
 
 > Generate accurate monthly rental bills with minimal manual effort.
 
@@ -48,7 +50,7 @@ tasks.
 
 # Objectives
 
-Rental Tracker should:
+Upa OS should:
 
 -   Eliminate repetitive monthly calculations.
 -   Maintain a complete billing history.
@@ -145,7 +147,7 @@ regenerated.
 
 # Product Philosophy
 
-Rental Tracker is a **Rental Billing Assistant**.
+Upa OS is a **Rental Billing Assistant**.
 
 It is not accounting software.
 

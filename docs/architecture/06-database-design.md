@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 04-tech-stack.md
@@ -16,7 +16,7 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines the logical database design for Rental Tracker.
+This document defines the logical database design for Upa OS.
 The schema is intentionally designed for Version 1 (one property, two
 tenants) while remaining extensible for future versions.
 
