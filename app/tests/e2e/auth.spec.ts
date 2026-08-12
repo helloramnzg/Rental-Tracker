@@ -12,9 +12,12 @@ test.describe("Authentication", () => {
     page,
   }) => {
     await loginAsLandlord(page);
-    // Both the topbar's <h1> route title and the page's own <h2> read
-    // "Dashboard" — level:2 disambiguates to the page heading.
-    await expect(page.getByRole("heading", { name: "Dashboard", level: 2 })).toBeVisible();
+    // The topbar's route title (components/layout/topbar.tsx) is an <h1>
+    // reading "Dashboard" on every visit, satisfying docs/design/23-dashboard-spec.md's
+    // Header requirement. The page's own content (features/dashboard/components/dashboard-view.tsx)
+    // replaces that with a personalized greeting once real data exists —
+    // there is no second "Dashboard" heading to disambiguate against.
+    await expect(page.getByRole("heading", { name: "Dashboard", level: 1 })).toBeVisible();
 
     await page.goto("/billing");
     await expect(page).toHaveURL(/\/billing/);

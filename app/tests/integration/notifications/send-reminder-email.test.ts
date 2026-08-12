@@ -116,4 +116,21 @@ describe("sendReminderEmail (integration)", () => {
       process.env.OWNER_EMAIL = originalOwner;
     }
   });
+
+  it("returns a config error rather than throwing when RESEND_API_KEY is unset", async () => {
+    const originalKey = process.env.RESEND_API_KEY;
+    delete process.env.RESEND_API_KEY;
+    const send = mockResendSend({ id: "should-not-be-used" }, null);
+
+    try {
+      const result = await sendReminderEmail(supabase, "billing");
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toMatch(/RESEND_API_KEY/);
+      }
+      expect(send).not.toHaveBeenCalled();
+    } finally {
+      process.env.RESEND_API_KEY = originalKey;
+    }
+  });
 });

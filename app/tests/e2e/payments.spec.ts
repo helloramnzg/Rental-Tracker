@@ -52,6 +52,12 @@ test.describe("Payments", () => {
     const balanceRow = page.getByRole("row", { name: new RegExp(tenant.tenantName) });
     await expect(balanceRow.getByText("outstanding", { exact: true })).toBeVisible();
 
+    // The Record Payment form lives in a closed-by-default Sheet
+    // (features/payments/components/payments-view.tsx) — Base UI's Portal
+    // doesn't mount its content until opened, so the trigger in the page
+    // header must be clicked before the form (and its comboboxes) exist.
+    await page.getByRole("button", { name: "Record Payment" }).click();
+
     const halfDue = Math.round(cycle.totalDue / 2);
     const recordForm = page
       .locator("form")

@@ -47,6 +47,16 @@ export async function sendReminderEmail(
     return { success: false, error: message };
   }
 
+  // getResendClient() throws synchronously if RESEND_API_KEY is unset —
+  // checked explicitly here so a missing key degrades the same way as a
+  // missing FROM_EMAIL/OWNER_EMAIL, instead of an uncaught exception
+  // surfacing as a bare 500 from the cron route handlers.
+  if (!process.env.RESEND_API_KEY) {
+    const message = "RESEND_API_KEY is not configured.";
+    console.error(`[reminder-email:${kind}] ${message}`);
+    return { success: false, error: message };
+  }
+
   const resend = getResendClient();
   const { data, error } = await resend.emails.send({
     from: fromEmail,
