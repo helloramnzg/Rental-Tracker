@@ -1,0 +1,9 @@
+Inter-Regular.ttf and Inter-Bold.ttf are bundled from the Inter typeface
+(https://github.com/rsms/inter), licensed under the SIL Open Font
+License, Version 1.1. See https://openfontlicense.org for the full
+license text.
+
+Bundled here (rather than loaded via next/font) so services/soa/generate-soa-pdf.ts
+can embed real glyph outlines into generated PDFs at build/runtime,
+including the Philippine Peso sign (₱, U+20B1), which pdf-lib's built-in
+standard fonts do not support.

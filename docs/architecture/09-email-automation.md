@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 04-tech-stack.md
@@ -16,7 +16,7 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines the automated email system for Rental Tracker.
+This document defines the automated email system for Upa OS.
 
 Version 1 only sends emails to the landlord. The application never sends
 emails directly to tenants.
@@ -49,7 +49,9 @@ Reasons:
 
 Scheduler: **Vercel Cron**
 
-Three scheduled jobs run every month.
+Three scheduled jobs run every month. The reminder schedule (25th,
+26th, 27th) is a fixed business rule and is not configurable through
+Settings.
 
   Day    Time    Purpose
   ------ ------- --------------------------------------
@@ -157,7 +159,7 @@ Each template should:
 -   Use consistent branding
 -   Be mobile-friendly
 -   Contain a clear call-to-action
--   Link back to Rental Tracker
+-   Link back to Upa OS
 
 ------------------------------------------------------------------------
 
@@ -217,7 +219,7 @@ the existing reminder workflow.
 
 # Summary
 
-Rental Tracker uses Vercel Cron and Resend to automate the landlord's
+Upa OS uses Vercel Cron and Resend to automate the landlord's
 monthly billing reminders. The system is intentionally lightweight,
 reliable, and centred on assisting the landlord while leaving all tenant
 communication under manual control.

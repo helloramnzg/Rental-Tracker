@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 04-tech-stack.md
@@ -15,7 +15,7 @@ version: 1.0.0
 
 ## Purpose
 
-Defines how the frontend communicates with the backend. Rental Tracker
+Defines how the frontend communicates with the backend. Upa OS
 uses **Next.js Server Actions** as the primary interaction model.
 Traditional REST endpoints are only introduced when required.
 
@@ -210,7 +210,7 @@ Every Server Action should have:
 
 # Summary
 
-Rental Tracker uses a Server Action-first architecture to minimise
+Upa OS uses a Server Action-first architecture to minimise
 complexity, improve type safety, and keep the application tightly
 integrated with Next.js. Public APIs are intentionally limited until a
 genuine integration requirement exists.

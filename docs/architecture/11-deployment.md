@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 04-tech-stack.md
@@ -16,7 +16,7 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines how Rental Tracker is deployed, configured,
+This document defines how Upa OS is deployed, configured,
 maintained, and updated across development and production environments.
 
 The deployment strategy prioritises simplicity, reliability, and
@@ -252,6 +252,6 @@ without major infrastructure changes.
 
 # Summary
 
-Rental Tracker uses GitHub, Vercel, Supabase, and Resend to provide a
+Upa OS uses GitHub, Vercel, Supabase, and Resend to provide a
 simple, production-ready deployment pipeline with minimal operational
 overhead while remaining within free-tier limits for Version 1.

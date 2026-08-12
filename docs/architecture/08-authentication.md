@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 04-tech-stack.md
@@ -15,8 +15,7 @@ version: 1.0.0
 
 ## Purpose
 
-Defines the authentication and authorisation strategy for Rental
-Tracker.
+Defines the authentication and authorisation strategy for Upa OS.
 
 Version 1 is intentionally simple: there is only one authenticated
 landlord account.
@@ -39,11 +38,11 @@ Provider: **Supabase Auth**
 Authentication Method:
 
 -   Email + Password
+-   Google Sign-in (OAuth, via Supabase Auth)
 
 Future methods (not implemented in Version 1):
 
 -   Magic Link
--   Google Sign-in
 -   Microsoft Sign-in
 
 ------------------------------------------------------------------------
@@ -195,7 +194,7 @@ without requiring structural redesign.
 
 # Summary
 
-Rental Tracker uses Supabase Auth with email and password
+Upa OS uses Supabase Auth with email and password
 authentication. The implementation is intentionally lightweight for
 Version 1 while providing a secure foundation that can evolve into a
 multi-user, role-based system in future releases.

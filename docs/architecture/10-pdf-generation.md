@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 03-system-architecture.md
 - 07-api-design.md
@@ -17,7 +17,7 @@ version: 1.0.0
 ## Purpose
 
 This document defines how Statements of Account (SOAs) are generated,
-stored, regenerated, and distributed within Rental Tracker.
+stored, regenerated, and distributed within Upa OS.
 
 The goal is to produce professional, print-ready PDFs that remain
 historically accurate and reproducible.
@@ -39,7 +39,7 @@ historically accurate and reproducible.
 
 Library:
 
-**@react-pdf/renderer**
+**pdf-lib**
 
 Reasons:
 
@@ -268,7 +268,7 @@ without redesigning the generation pipeline.
 
 # Summary
 
-Rental Tracker treats PDFs as immutable billing artefacts. Every
+Upa OS treats PDFs as immutable billing artefacts. Every
 Statement of Account is generated from a historical billing snapshot,
 stored for future reference, and can be regenerated at any time while
 preserving the exact billing information originally issued.

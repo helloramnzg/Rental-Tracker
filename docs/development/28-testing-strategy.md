@@ -1,5 +1,5 @@
 ---
-project: Rental Tracker
+project: Upa OS
 title: Testing Strategy
 version: 1.0.0
 ---

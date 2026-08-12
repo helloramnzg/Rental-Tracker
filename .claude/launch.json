@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rental-tracker-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "app", "run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "rental-tracker-app-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "app", "run", "start"],
+      "port": 3000
+    },
+    {
+      "name": "rental-tracker-app-alt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "app", "run", "dev", "--", "-p", "3100"],
+      "port": 3100
+    }
+  ]
+}

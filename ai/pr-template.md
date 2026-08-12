@@ -1,5 +1,5 @@
 ---
-project: Rental Tracker
+project: Upa OS
 title: pr-template
 version: 1.0.0
 ---

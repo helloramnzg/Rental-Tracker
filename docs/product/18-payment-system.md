@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-08-06
-project: Rental Tracker
+project: Upa OS
 status: Draft
 title: 14-payment-system
 version: 1.0.0

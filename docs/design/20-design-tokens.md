@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - 19-design-system.md
 status: Draft
@@ -14,7 +14,7 @@ version: 1.0.0
 ## Purpose
 
 Design tokens are the single source of truth for all visual primitives
-used throughout Rental Tracker. Components and screens must reference
+used throughout Upa OS. Components and screens must reference
 these tokens instead of hard-coded values.
 
 ------------------------------------------------------------------------
@@ -36,8 +36,8 @@ these tokens instead of hard-coded values.
 
   Token          Hex       Usage
   -------------- --------- -----------------
-  primary        #A8E063   Primary accent
-  primary-dark   #1E3D34   Primary buttons
+  primary        #A8E063   Primary buttons, primary accent
+  primary-dark   #1E3D34   Headings, text on primary buttons, dark surfaces
   primary-soft   #E8F5E5   Active states
 
 ## Neutral
@@ -66,17 +66,22 @@ these tokens instead of hard-coded values.
 
 Font Family
 
-Inter
+DM Sans
 
-  Token       Size   Weight   Line Height
-  --------- ------ -------- -------------
-  display       32      700            40
-  h1            28      700            36
-  h2            22      600            30
-  h3            18      600            26
-  body          16      400            24
-  small         14      400            20
-  caption       12      500            16
+  Token       Size   Weight   Line Height   Letter Spacing
+  --------- ------ -------- ------------- ----------------
+  display       32      700            40   -0.03em
+  h1            28      700            36   -0.03em
+  h2            18      700            26   -0.02em
+  h3            17      700            24   -0.01em
+  body          14      400            20   normal
+  small         13      400            18   normal
+  caption       12      400            16   normal
+
+Two effective weights carry most UI text: 400 (regular body/muted)
+and 600–700 (emphasis — buttons, badges, labels, nav-active state,
+headings). Components apply 600/700 explicitly where emphasis is
+needed; caption/body/small stay regular by default.
 
 ------------------------------------------------------------------------
 
@@ -205,5 +210,5 @@ without changing component structure.
 # Summary
 
 These design tokens provide the visual foundation for every component
-and screen in Rental Tracker, ensuring consistency between design and
+and screen in Upa OS, ensuring consistency between design and
 implementation.

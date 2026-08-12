@@ -1,5 +1,5 @@
 ---
-project: Rental Tracker
+project: Upa OS
 title: Production Deployment
 version: 1.0.0
 ---

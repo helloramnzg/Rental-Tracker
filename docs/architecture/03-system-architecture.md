@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-06
 owner: Riri
-project: Rental Tracker
+project: Upa OS
 related:
 - ../00-project-charter.md
 - ../01-product-vision.md
@@ -17,7 +17,7 @@ version: 1.0.0
 
 ## Purpose
 
-This document defines the high-level architecture for Rental Tracker. It
+This document defines the high-level architecture for Upa OS. It
 explains how the system is structured, how data flows through the
 application, and where business logic belongs.
 
@@ -219,4 +219,4 @@ This document should be read before:
 -   07-api-design.md
 
 Together, these documents define the complete technical foundation of
-Rental Tracker.
+Upa OS.

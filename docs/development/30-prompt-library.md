@@ -1,5 +1,5 @@
 ---
-project: Rental Tracker
+project: Upa OS
 title: Prompt Library
 version: 1.0.0
 ---
